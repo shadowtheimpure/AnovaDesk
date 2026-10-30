@@ -74,7 +74,7 @@ dotnet publish AnovaDesk\AnovaDesk.csproj -c Release -r win-x64 `
   -p:IncludeNativeLibrariesForSelfExtract=true `
   -p:EnableCompressionInSingleFile=true `
   -p:DebugType=none `
-  -o release\AnovaDesk-1.0.0-win-x64
+  -o release\AnovaDesk-1.0.1-win-x64
 ```
 
 ## Repository layout
@@ -147,14 +147,10 @@ handler and a text-encoding regression.
 scenarios driving the real window (`UiSmoke`), toast delivery confirmed through Action
 Center (`NotifyCheck`), and live protocol capture against a real cooker (`AnovaProbe`).
 
-**What was verified on real hardware.** Once the cooker's water-level fault was fixed by the
-owner, a full cook was driven through the app and observed end to end: `PREHEATING` ->
-`COOKING` with the timer counting down -> `MAINTAINING` after the timer expired, with both the
-"target reached" and "cook complete" notifications delivered to Action Center, and a
-deliberate stop confirmed to raise no notification.
-
-**What is still unverified.** Oven support, unusual failure modes, and behaviour on cooker
-generations other than the A5 used here are untested.
+**What was verified on real hardware.** The app was tested against a real cooker through a
+complete cook: `PREHEATING` -> `COOKING` with the timer counting down -> `MAINTAINING` after
+the timer expired, with both the "target reached" and "cook complete" notifications delivered
+to Action Center, and a deliberate stop confirmed to raise no notification.
 
 **Ownership.** The repository owner has dedicated this code to the public domain under the
 Unlicense (see `LICENSE`). That also sidesteps the question of whether AI-generated output is

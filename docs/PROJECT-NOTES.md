@@ -15,7 +15,7 @@ in the app's device list and in the original session.
 | --- | --- |
 | Repository | https://github.com/shadowtheimpure/AnovaDesk (private at time of writing) |
 | Licence | Unlicense (public domain) for project code; `reference/` is third-party |
-| Released | `v1.0.0`, assets: `AnovaDesk-1.0.0-win-x64.zip`, `SHA256SUMS.txt` |
+| Released | `v1.0.1`, assets: `AnovaDesk-1.0.1-win-x64.zip`, `SHA256SUMS.txt` |
 | Workspace folder | `G:\Coding Projects\AnovaDesk` (renamed from `ReverseEngineerAnything`) |
 | Binary | Unsigned self-contained single file, ~72 MB |
 
@@ -191,9 +191,8 @@ with `gist, repo, workflow` scopes, which `gh auth login` rejects for missing `r
 
 ## Open items
 
-- Cooks run correctly since the water-level fault was fixed; the completion and stop
-  notification defects found during that test are fixed but ship only in a build newer than
-  the published v1.0.0.
+- Cooks run correctly since the water-level fault was fixed. The completion and stop
+  notification defects found during that test are fixed in v1.0.1.
 - Precision Ovens are listed but their commands are not implemented.
 - The binary is unsigned, so SmartScreen warns on first run.
 - The `v1.0.0` tag points one commit behind `main`; the difference is cosmetic (README only).
