@@ -1,4 +1,4 @@
-# AnovaDesk
+﻿# AnovaDesk
 
 A Windows desktop app for controlling Anova Wi-Fi Precision Cookers.
 
@@ -6,8 +6,6 @@ Anova ships iOS and Android apps but no Windows client, so this project drives t
 cooker through Anova's own documented developer WebSocket API. Nothing here
 reverse-engineers the device firmware: the protocol is implemented from Anova's
 public developer documentation.
-
-![status](https://img.shields.io/badge/platform-Windows%2010%2F11%20x64-blue)
 
 ## Features
 
