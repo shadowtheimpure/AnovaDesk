@@ -99,7 +99,7 @@ reference\          third-party reference material, see reference/NOTICE.md
 | --- | --- |
 | `tools\AnovaProbe` | Dumps raw websocket frames. `--cycle` sends a start/stop pair and prints every response. |
 | `tools\NotifyCheck` | Posts a toast and reports whether it reached Action Center. |
-| `tools\CookRuleCheck` | 27 assertions over the notification rules and formatting helpers. |
+| `tools\CookRuleCheck` | 35 assertions over the notification rules and formatting helpers. |
 | `tools\UiSmoke` | UI Automation smoke test: six scenarios driving the real window. |
 
 Run them from the repository root:
@@ -120,9 +120,8 @@ delete a real token.
 
 - **Precision Ovens are not implemented.** Oven devices are listed but their
   commands are not sent.
-- **The app cannot fix a device fault.** If a cooker will not sustain a cook, the
-  app reports the abort and surfaces the safety flags, but the cause is on the
-  device side.
+- **Device faults still block cooking.** The app reports aborts and surfaces the safety
+  flags, but it cannot work around a hardware fault such as a low water level.
 - **Token scope is limited.** Personal access tokens expose a subset of commands
   and are rate limited by Anova; websocket connections also time out after
   30 minutes of inactivity, which the app works around by refreshing the session.
@@ -144,14 +143,18 @@ and reported the defects that drove several rounds of fixes, including two bugs 
 handler and a text-encoding regression.
 
 **What was verified automatically.** The harnesses in `tools\` were run during development:
-27 assertions over notification rules and formatting (`CookRuleCheck`), six UI Automation
+35 assertions over notification rules and formatting (`CookRuleCheck`), six UI Automation
 scenarios driving the real window (`UiSmoke`), toast delivery confirmed through Action
 Center (`NotifyCheck`), and live protocol capture against a real cooker (`AnovaProbe`).
 
-**What is not verified.** No test asserts that a cook runs to completion on the device. The
-cooker available during development would not sustain a cook, so start and stop are confirmed
-at the protocol level (the device returns `{"status":"ok"}` and briefly reports
-`COOK / PREHEATING`) but not end to end. Treat that path as unproven.
+**What was verified on real hardware.** Once the cooker's water-level fault was fixed by the
+owner, a full cook was driven through the app and observed end to end: `PREHEATING` ->
+`COOKING` with the timer counting down -> `MAINTAINING` after the timer expired, with both the
+"target reached" and "cook complete" notifications delivered to Action Center, and a
+deliberate stop confirmed to raise no notification.
+
+**What is still unverified.** Oven support, unusual failure modes, and behaviour on cooker
+generations other than the A5 used here are untested.
 
 **Ownership.** The repository owner has dedicated this code to the public domain under the
 Unlicense (see `LICENSE`). That also sidesteps the question of whether AI-generated output is

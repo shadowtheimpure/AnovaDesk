@@ -27,14 +27,33 @@ Check("heating", r.Evaluate(true, 45.0, 60, 3400));
 Check("crosses target", r.Evaluate(true, 59.6, 60, 3000), CookEvent.TargetReached);
 Check("held at target (no repeat)", r.Evaluate(true, 60.1, 60, 2900));
 Check("held at target (no repeat 2)", r.Evaluate(true, 60.0, 60, 2800));
-Check("timer exhausts, cook ends", r.Evaluate(false, 60.0, 60, 0), CookEvent.CookComplete);
-Check("stays idle (no repeat)", r.Evaluate(false, 60.0, 60, 0));
+Check("timer running down", r.Evaluate(true, 60.0, 60, 30));
+Check("timer hits zero -> complete", r.Evaluate(true, 60.0, 60, 0), CookEvent.CookComplete);
+Check("device keeps maintaining (no repeat)", r.Evaluate(true, 60.0, 60, 0));
+Check("still maintaining (no repeat 2)", r.Evaluate(true, 60.0, 60, 0));
 
 // --- a cook stopped early ---------------------------------------------------
 r = new CookNotificationRules();
 r.Evaluate(true, 22.0, 60, 3600);
 Check("water never reached target", r.Evaluate(true, 40.0, 60, 3000));
 Check("stopped early -> error event", r.Evaluate(false, 40.0, 60, 1200), CookEvent.CookStopped);
+
+// --- a requested stop must not be reported back as a failure ----------------
+r = new CookNotificationRules();
+r.Evaluate(true, 22.0, 60, 600);
+r.RequestStop();
+Check("deliberate stop -> no event", r.Evaluate(false, 22.0, 60, 600));
+Check("stays idle after stop", r.Evaluate(false, 22.0, 60, 600));
+Check("stop flag consumed: new cook arms", r.Evaluate(true, 22.0, 60, 300));
+Check("genuine stop still reports", r.Evaluate(false, 22.0, 60, 200), CookEvent.CookStopped);
+
+// --- finishing then stopping must not re-report ------------------------------
+r = new CookNotificationRules();
+r.Evaluate(true, 22.0, 60, 120);
+Check("completes (target then completion in one frame)",
+    r.Evaluate(true, 60.0, 60, 0), CookEvent.TargetReached, CookEvent.CookComplete);
+r.Reset();
+Check("stop after completion -> no event", r.Evaluate(false, 60.0, 60, 120));
 
 // --- device that never enters cook mode: no lifecycle event here -------------
 // (the app raises "cook failed to start" from its own start-request watchdog)

@@ -649,6 +649,7 @@ public partial class MainWindow : Window
 
         try
         {
+            _cookRules.Reset();
             await _client.StartCookAsync(_selected, celsius, seconds);
             _startRequestAt = DateTime.UtcNow;
             _cookObserved = false;
@@ -666,6 +667,7 @@ public partial class MainWindow : Window
         if (_selected is null || !_deviceSupported) return;
         try
         {
+            _cookRules.RequestStop();  // a requested stop must not be reported back as a failure
             await _client.StopCookAsync(_selected);
             _startRequestAt = null;   // a deliberate stop must not look like an abort
             AddLog("Stop requested.");

@@ -1,4 +1,4 @@
-# AnovaDesk engineering notes
+﻿# AnovaDesk engineering notes
 
 A durable record of how this project was built, what was learned about the device, and what
 remains unresolved. Written so a future session can pick up without replaying the original
@@ -88,26 +88,38 @@ temperature. A stored target of 57.8 therefore means 57.8 C (136 F), not 57.8 F.
 
 Commands are sent in Celsius with `unit: "C"`, matching Anova's own reference implementation.
 
-## Unresolved: cooks do not sustain
+## Cook lifecycle (resolved)
 
-This is the main open problem and is **not an application bug**.
+Earlier in the project a cook would not sustain: the device acknowledged the command, briefly
+reported `COOK / PREHEATING`, and fell back to `IDLE` with the timer frozen. `pin-info`
+reported zero for every flag throughout, so the cause was invisible from the cloud. The owner
+fixed a water-level fault on the unit, after which cooks run normally.
 
-Observed with `tools/AnovaProbe --cycle`:
+Verified end to end on 2026-10-30, driven through the app's own UI:
 
-| Test | Result |
-| --- | --- |
-| 30 C / 300 s | `RESPONSE {"status":"ok"}`, one frame of `COOK / PREHEATING`, then back to `IDLE`. Heater never energised. |
-| 60 C / 3600 s | `RESPONSE {"status":"ok"}`, `mode` stayed `IDLE`, but heater rose 22.37 -> 23.11 C while water moved 22.4 -> 22.9 C. Timer never counted down. |
+| Phase | Device state | Timer | Notification |
+| --- | --- | --- | --- |
+| Heating | `mode=COOK`, `jstate=PREHEATING` | full | - |
+| Target reached | `jstate=COOKING`, water within 0.5 of target | counting down | "Target temperature reached" |
+| Timer expired | `jstate=MAINTAINING` | `rem=0` | "Cook complete" |
+| Deliberate stop | `mode=IDLE`, `rem` reset to full | - | none (by design) |
 
-`job-start-systick` advanced once, then froze, so the job never entered a running state.
-`pin-info` reported **zero for every flag in every frame**, including while the element was
-energising, which suggests firmware 1.6.0 does not publish water-level faults to the cloud at
-all. The owner suspected a water-level fault, which fits the evidence better than anything
-observable remotely.
+**The important protocol detail:** an Anova cooker does **not** stop when the timer expires.
+It switches to `MAINTAINING` and keeps holding temperature indefinitely, so `mode` stays
+`COOK`. Completion must therefore be detected from `cook-time-remaining` reaching zero while
+the cook is still running, not from the cook ending. An earlier version of the app waited for
+cooking to stop and so never reported completion.
 
-Consequence for the app: it now detects this and reports it rather than showing a calm
-"IDLE" - a start that never reaches `COOK`, or falls straight back out of it, raises both a
-visible warning and a "cook failed to start" notification.
+**Second defect found in the same test:** pressing Stop produced a spurious "Cook stopped"
+warning, because the notification rule saw the cook end with time remaining. Clearing rule
+state when the button is pressed was not enough - state frames still arriving before the
+device winds down re-armed it. The fix records the requested stop and consumes it on the
+transition, with a two-minute expiry in case the stop never lands.
+
+**Unit gotcha worth remembering:** `CMD_APC_START` with `unit: "C"` also switches the
+device's stored display unit, and the app then adopts it. Targets must be entered in whatever
+unit the app is showing; setting `90` while displaying Fahrenheit means 90 F, and while
+displaying Celsius means 90 C.
 
 ## Application design
 
@@ -149,7 +161,7 @@ WPF on .NET 10, target `net10.0-windows10.0.19041.0`, published self-contained s
 | Tool | Covers |
 | --- | --- |
 | `tools/UiSmoke` | Six UI Automation scenarios: no-token, forget token, advanced toggle, close cancel/minimize/exit |
-| `tools/CookRuleCheck` | 27 assertions over notification rules and formatting |
+| `tools/CookRuleCheck` | 35 assertions over notification rules and formatting |
 | `tools/NotifyCheck` | Toast delivery, proven by Action Center history count |
 | `tools/AnovaProbe` | Raw frame dump; `--cycle` sends start/stop and prints responses |
 
@@ -179,7 +191,9 @@ with `gist, repo, workflow` scopes, which `gh auth login` rejects for missing `r
 
 ## Open items
 
-- Cooks do not sustain on this unit (see above); root cause is on the device side.
+- Cooks run correctly since the water-level fault was fixed; the completion and stop
+  notification defects found during that test are fixed but ship only in a build newer than
+  the published v1.0.0.
 - Precision Ovens are listed but their commands are not implemented.
 - The binary is unsigned, so SmartScreen warns on first run.
 - The `v1.0.0` tag points one commit behind `main`; the difference is cosmetic (README only).
