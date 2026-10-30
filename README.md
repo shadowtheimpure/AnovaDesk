@@ -15,7 +15,7 @@ public developer documentation.
 - Celsius / Fahrenheit toggle, with preset temperatures that follow the unit
 - Windows toast notifications for: target temperature reached, cook complete,
   cook stopped early, and cook failed to start
-- Safety flags surfaced from the device (water leak, level, over-temperature, fault)
+- Safety flags surfaced from the device
 - Tray icon with close-to-tray option, so a cook keeps being monitored
 - Technical panels (raw device state and websocket traffic) behind an
   "Advanced view" toggle that is off by default
@@ -120,8 +120,6 @@ delete a real token.
 
 - **Precision Ovens are not implemented.** Oven devices are listed but their
   commands are not sent.
-- **Device faults still block cooking.** The app reports aborts and surfaces the safety
-  flags, but it cannot work around a hardware fault such as a low water level.
 - **Token scope is limited.** Personal access tokens expose a subset of commands
   and are rate limited by Anova; websocket connections also time out after
   30 minutes of inactivity, which the app works around by refreshing the session.
