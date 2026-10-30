@@ -53,6 +53,14 @@ whenever no token is registered.
 
 Requires the [.NET 10 SDK](https://dotnet.microsoft.com/download).
 
+`AnovaDesk.sln` includes the app and all four tools, so a single build covers everything:
+
+```powershell
+dotnet build AnovaDesk.sln -c Release
+```
+
+To build just the application:
+
 ```powershell
 dotnet build AnovaDesk\AnovaDesk.csproj -c Release
 ```
@@ -72,6 +80,7 @@ dotnet publish AnovaDesk\AnovaDesk.csproj -c Release -r win-x64 `
 ## Repository layout
 
 ```
+AnovaDesk.sln       solution covering the app and all four tools
 AnovaDesk\          the WPF application
   AnovaClient.cs      websocket transport and command payloads
   MainWindow.*        UI and state rendering
@@ -118,6 +127,34 @@ delete a real token.
   30 minutes of inactivity, which the app works around by refreshing the session.
 - **The release binary is unsigned**, so Windows SmartScreen warns on first run.
 - **Debug symbols are not shipped** with the release build.
+
+## AI usage disclosure
+
+This project was built with substantial AI assistance, and it seems worth saying so plainly.
+
+**What was AI-assisted.** The application source, the four test harnesses, the packaging and
+release steps, and this README were written by an AI coding agent (OpenWork, running
+DeepSeek V4.1 Flash) working in a single session.
+
+**What a human did.** The repository owner directed the work, supplied the physical cooker
+and its network address, created the Anova personal access token, ran the app against real
+hardware, visually confirmed the window and notifications (the agent has no screen access),
+and reported the defects that drove several rounds of fixes, including two bugs in the close
+handler and a text-encoding regression.
+
+**What was verified automatically.** The harnesses in `tools\` were run during development:
+27 assertions over notification rules and formatting (`CookRuleCheck`), six UI Automation
+scenarios driving the real window (`UiSmoke`), toast delivery confirmed through Action
+Center (`NotifyCheck`), and live protocol capture against a real cooker (`AnovaProbe`).
+
+**What is not verified.** No test asserts that a cook runs to completion on the device. The
+cooker available during development would not sustain a cook, so start and stop are confirmed
+at the protocol level (the device returns `{"status":"ok"}` and briefly reports
+`COOK / PREHEATING`) but not end to end. Treat that path as unproven.
+
+**Ownership.** The repository owner has dedicated this code to the public domain under the
+Unlicense (see `LICENSE`). That also sidesteps the question of whether AI-generated output is
+copyrightable, which varies by jurisdiction.
 
 ## Attribution and trademarks
 
