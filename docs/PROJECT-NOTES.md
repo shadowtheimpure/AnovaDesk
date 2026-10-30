@@ -4,7 +4,7 @@ A durable record of how this project was built, what was learned about the devic
 remains unresolved. Written so a future session can pick up without replaying the original
 chat, which lives in a different OpenWork workspace record.
 
-Last updated: 2026-10-30, at v1.0.0.
+Last updated: 2026-10-30, at v1.0.1.
 
 Device identifiers (cooker IDs, MAC address) are deliberately omitted here. They are visible
 in the app's device list and in the original session.
@@ -195,7 +195,6 @@ with `gist, repo, workflow` scopes, which `gh auth login` rejects for missing `r
   notification defects found during that test are fixed in v1.0.1.
 - Precision Ovens are listed but their commands are not implemented.
 - The binary is unsigned, so SmartScreen warns on first run.
-- The `v1.0.0` tag points one commit behind `main`; the difference is cosmetic (README only).
 - The empty `G:\Coding Projects\ReverseEngineerAnything` folder remains and can be deleted
   once OpenWork is restarted and releases it.
 
