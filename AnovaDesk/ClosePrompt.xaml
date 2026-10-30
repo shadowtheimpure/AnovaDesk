@@ -1,0 +1,64 @@
+<Window x:Class="AnovaDesk.ClosePrompt"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Close AnovaDesk"
+        Width="430" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize" ShowInTaskbar="False"
+        Background="#12141A" Foreground="#E9ECEF"
+        FontFamily="Segoe UI" FontSize="13"
+        UseLayoutRounding="True">
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="#E9ECEF"/>
+            <Setter Property="Background" Value="#252A34"/>
+            <Setter Property="BorderBrush" Value="#333A47"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2F3644"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="Primary" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#FF7A45"/>
+            <Setter Property="BorderBrush" Value="#FF7A45"/>
+            <Setter Property="Foreground" Value="#1A0E06"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF8A5B"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Border Padding="22">
+        <StackPanel>
+            <TextBlock Text="Close AnovaDesk?" FontSize="17" FontWeight="SemiBold"/>
+            <TextBlock Margin="0,9,0,0" TextWrapping="Wrap" Foreground="#98A2B3"
+                       Text="Minimize to the notification area to keep monitoring a cook and receiving notifications. Closing quits the app."/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                <Button Content="Cancel" Click="Cancel_Click" IsCancel="True" Margin="0,0,8,0"/>
+                <Button Content="Minimize to tray" Click="Minimize_Click" Style="{StaticResource Primary}" Margin="0,0,8,0"/>
+                <Button Content="Exit" Click="Exit_Click"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

@@ -1,0 +1,19 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+
+# Published binaries — shipped as GitHub Release assets, not committed
+release/
+
+# IDE / editor
+.vs/
+.idea/
+*.user
+*.suo
+
+# OpenWork session data (chat attachments, screenshots)
+.opencode/
+
+# OS noise
+Thumbs.db
+desktop.ini
