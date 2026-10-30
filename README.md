@@ -89,6 +89,7 @@ AnovaDesk\          the WPF application
   Notifier.cs         tray icon and fallback notification path
   TokenStore.cs       Windows Credential Manager storage
 tools\              diagnostic and test harnesses (see below)
+docs\               engineering notes, protocol findings, open issues
 reference\          third-party reference material, see reference/NOTICE.md
 ```
 
