@@ -1,0 +1,19 @@
+# Normalise line endings: LF inside the repository, native endings on checkout.
+* text=auto
+
+*.cs        text diff=csharp
+*.csproj    text
+*.xaml      text
+*.manifest  text
+*.md        text
+*.py        text
+*.json      text
+*.sln       text eol=crlf
+
+# Binary assets must never be line-ending converted or diffed as text.
+*.ico       binary
+*.png       binary
+*.zip       binary
+*.exe       binary
+*.dll       binary
+*.pdb       binary
