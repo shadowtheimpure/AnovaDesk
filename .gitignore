@@ -14,6 +14,10 @@ release/
 # OpenWork session data (chat attachments, screenshots)
 .opencode/
 
+# Local session exports: reference only, and they contain device identifiers
+docs/transcript.md
+docs/transcript.raw.json
+
 # OS noise
 Thumbs.db
 desktop.ini
